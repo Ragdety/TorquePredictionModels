@@ -6,7 +6,8 @@ USER_AGENT = "csc/torque"
 MAX_CSC_ROWS = 600
 
 # Feature and label names
-FEATURES = ['vEgo', 'steeringAngleDeg', 'aEgo', 'latAccelSteeringAngle', 't']
+# Note: t and steerFiltered will be used for feature engineering, removed after feature engineering
+FEATURES = ['vEgo', 'steeringAngleDeg', 'latAccelSteeringAngle', 't', 'steerFiltered']
 LABEL = 'steerFiltered'
 
 # Training constants

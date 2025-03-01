@@ -176,8 +176,9 @@ class CSCDataset(Dataset):
         return size_mb, csv_count
 
     def _check_integrity(self) -> None:
-        # Might add more logic in this function (Ex: checking the download is not corrupted, etc..)
+        # TODO: Might add more logic in this function (Ex: checking the download is not corrupted, etc..)
         if not self._is_downloaded_extracted():
+            # TODO: Add logic to download if not downloaded, instead of raising an exception
             raise Exception(f"Dataset {self.dataset_zip} not downloaded/extracted...")
             
         self.logger.info(f"Dataset downloaded and extracted, ready to use! Folder: {self.dataset_folder_path}")

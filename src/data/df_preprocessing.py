@@ -96,6 +96,16 @@ class SequencesDP:
         # return np.array(seq)[-1]
         return np.array(seq)
     
+class TorqueLagAdderDP:
+    # TODO: Add possibility to add multiple lags, instead of calling the class multiple times
+    def __init__(self, lag=1):
+        self.lag = lag
+
+    def __call__(self, df: pd.DataFrame, torque_feature_name='steerFiltered'):
+        lag_name = f"{torque_feature_name}Lag{self.lag}"
+        df[lag_name] = df[torque_feature_name].shift(self.lag)
+        return df
+
 class LowPassFilterDP:
     def __init__(self, wn=0.1, order=2):
         self.wn = wn
