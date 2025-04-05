@@ -1,3 +1,4 @@
+from typing import List
 import pandas as pd
 import numpy as np
 import pickle
@@ -35,7 +36,7 @@ class SaveableDP:
 
 
 class MinMaxScalerDP(SaveableDP):
-    def __init__(self, save_path=None, feature_range = (0, 1)):
+    def __init__(self, save_path=None, feature_range = (-1, 1)):
         super(MinMaxScalerDP, self).__init__(save_path=save_path)
         self.scaler = MinMaxScaler(feature_range=feature_range)
         self.type = MIN_MAX_SCALER_TYPE
@@ -96,14 +97,35 @@ class SequencesDP:
         # return np.array(seq)[-1]
         return np.array(seq)
     
-class TorqueLagAdderDP:
+class EMAFeatureAdderDP:
+    def __init__(self, features: List[str], span: int=5):
+        self.span = span
+        self.features = features
+
+    def __call__(self, df: pd.DataFrame):
+        for feature in self.features:
+            df[f"{feature}EMA"] = df[feature].ewm(span=self.span).mean()
+        return df
+
+class RollingMeanFeatureAdderDP:
+    def __init__(self, features: List[str], window: int=5):
+        self.window = window
+        self.features = features
+
+    def __call__(self, df: pd.DataFrame):
+        for feature in self.features:
+            df[f"{feature}RollingMean"] = df[feature].rolling(window=self.window).mean()
+        return df
+
+class LagAdderDP:
     # TODO: Add possibility to add multiple lags, instead of calling the class multiple times
-    def __init__(self, lag=1):
+    def __init__(self, feature_name: str, lag=1):
+        self.feature_name = feature_name
         self.lag = lag
 
-    def __call__(self, df: pd.DataFrame, torque_feature_name='steerFiltered'):
-        lag_name = f"{torque_feature_name}Lag{self.lag}"
-        df[lag_name] = df[torque_feature_name].shift(self.lag)
+    def __call__(self, df: pd.DataFrame):
+        lag_name = f"{self.feature_name}Lag{self.lag}"
+        df[lag_name] = df[self.feature_name].shift(self.lag)
         return df
 
 class LowPassFilterDP:

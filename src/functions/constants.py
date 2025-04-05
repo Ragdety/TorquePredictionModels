@@ -6,7 +6,7 @@ USER_AGENT = "csc/torque"
 MAX_CSC_ROWS = 600
 
 # Feature and label names
-# Note: t and steerFiltered will be used for feature engineering, removed after feature engineering
+# Note: t will be used for feature engineering, removed after feature engineering
 FEATURES = ['vEgo', 'steeringAngleDeg', 'latAccelSteeringAngle', 't', 'steerFiltered']
 LABEL = 'steerFiltered'
 
@@ -24,8 +24,8 @@ MODEL_OUTPUT_ACTIVATIONS = {
 SEQUENCE_LENGTH = 40
 IS_LSTM = False
 TORQUE_LP_FILTER = False
-USE_SCHEDULER = True
-ADD_FEATURES = True
+USE_SCHEDULER = False
+ADD_FEATURES = False
 
 NUM_FEATURES = len(FEATURES)
 

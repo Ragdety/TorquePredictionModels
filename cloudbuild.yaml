@@ -1,0 +1,51 @@
+steps:
+  # Step 1: Set up Python environment and install dependencies
+  - name: 'python:3.12'
+    id: 'Install dependencies'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        pip install --upgrade pip
+        pip install google-cloud-storage xgboost pytest 
+        pip install -r requirements.txt
+
+  # Step 2: Download model from Google Cloud Storage (Vertex AI Model Registry)
+  - name: 'python:3.12'
+    id: 'Download Model'
+    entrypoint: 'python'
+    args: ['src/scripts/download_model.py']
+
+  # Step 3: Run Unit Tests
+  - name: 'python:3.12'
+    id: 'Run Integration Tests'
+    entrypoint: 'pytest'
+    args: ['src/tests/unit_tests.py', '-v']
+
+  # Step 4: Run Integration Tests
+  # - name: 'python:3.12'
+  #   id: 'Run Integration Tests'
+  #   entrypoint: 'pytest'
+  #   args: ['src/tests/integration_tests.py']
+
+  # # Step 5: Run White-Box Tests
+  # - name: 'python:3.12'
+  #   id: 'Run White-Box Tests'
+  #   entrypoint: 'pytest'
+  #   args: ['src/tests/white_box_tests.py']
+
+  # # Step 6: Run Regression Tests
+  # - name: 'python:3.12'
+  #   id: 'Run Regression Tests'
+  #   entrypoint: 'pytest'
+  #   args: ['tests/regression_tests.py']
+
+  - name: 'python:3.12'
+    entrypoint: bash
+    args: ['-c', 'pytest --junitxml=test-results.xml']
+
+  # Upload test results to Cloud Storage
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args: ['cp', 'test-results.xml', 'gs://csi5370_bucket/test-results/']
+
+timeout: '1200s'

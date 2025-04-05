@@ -187,7 +187,8 @@ class CSCDataset(Dataset):
         if not os.path.exists(self.dataset_folder_path):
             return False
 
-        # Return True if folder is not empty 
+        # Return True if folder is not empty
+        self.logger.info(f"Dataset folder path: {self.dataset_folder_path}") 
         return not len(os.listdir(self.dataset_folder_path)) == 0
 
     def _preproc_dataset_name(self, dataset_name: str) -> str:
