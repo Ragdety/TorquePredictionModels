@@ -11,6 +11,11 @@ steps:
     entrypoint: pip
     args: ['install', '-r', 'requirements.txt']
 
+  # verification step to check if google-cloud packages are installed
+  - name: 'python:3.12'
+    entrypoint: bash
+    args: ['-c', 'pwd && ls -R']
+
   # Step 2: Download model from Google Cloud Storage (Vertex AI Model Registry)
   - name: 'python:3.12'
     id: 'Download Model'
