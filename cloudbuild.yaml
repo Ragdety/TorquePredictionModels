@@ -1,3 +1,8 @@
+options:
+  logging: CLOUD_LOGGING_ONLY  # or GCS_ONLY
+  logsBucket: 'gs://csi5370_bucket/logs'  # Must exist in GCS
+
+
 steps:
   # Step 1: Set up Python environment and install dependencies
   - name: 'python:3.12'
