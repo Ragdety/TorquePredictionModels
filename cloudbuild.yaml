@@ -34,9 +34,9 @@ steps:
 
   # Step 3: Run Unit Tests
   - name: 'python:3.12'
-    id: 'Run Integration Tests'
-    entrypoint: 'pytest'
-    args: ['src/tests/unit_tests.py', '-v']
+    id: 'Run Unit Tests'
+    entrypoint: python
+    args: ['-m', 'pytest', 'src/tests/unit_tests.py', '-v']
 
   # Step 4: Run Integration Tests
   # - name: 'python:3.12'
@@ -56,9 +56,10 @@ steps:
   #   entrypoint: 'pytest'
   #   args: ['tests/regression_tests.py']
 
+  # Generate JUnit report
   - name: 'python:3.12'
-    entrypoint: bash
-    args: ['-c', 'pytest --junitxml=test-results.xml']
+    entrypoint: python
+    args: ['-m', 'pytest', '--junitxml=test-results.xml']
 
   # Upload test results to Cloud Storage
   - name: 'gcr.io/cloud-builders/gsutil'
