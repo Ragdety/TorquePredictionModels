@@ -9,7 +9,7 @@ steps:
   # First install dependencies system-wide
   - name: 'python:3.12'
     entrypoint: bash
-    args: ['-c', 'pip install --prefix=/usr/local -r requirements.txt']
+    args: ['-c', 'pip install --user -r requirements.txt']
 
   # verification step to check if google-cloud packages are installed
   - name: 'python:3.12'
