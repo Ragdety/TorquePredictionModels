@@ -8,13 +8,8 @@ options:
 steps:
   # Step 1: Set up Python environment and install dependencies
   - name: 'python:3.12'
-    id: 'Install dependencies'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        pip install --upgrade pip
-        pip install -r requirements.txt
+    entrypoint: pip
+    args: ['install', '-r', 'requirements.txt']
 
   # Step 2: Download model from Google Cloud Storage (Vertex AI Model Registry)
   - name: 'python:3.12'
