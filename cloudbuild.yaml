@@ -16,10 +16,10 @@ steps:
     entrypoint: bash
     args: ['-c', 'pwd && ls -R']
 
-  # Verify installation
+  # 2. Verify both installation AND import capability
   - name: 'python:3.12'
     entrypoint: bash
-    args: ['-c', 'pip list | grep google']
+    args: ['-c', 'python -c "from google.cloud import storage; print(storage.__version__)"']
 
   # Add /workspace to Python path and run script
   - name: 'python:3.12'
