@@ -6,6 +6,16 @@ from constants import (
   GCP_BUCKET_NAME
 )
 
+# These imports are just for the automatic generation of requirements.txt
+# That are part of the jupyter notebook which pipreqs skips
+import xgboost as xgb
+import shutil
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from google.cloud import aiplatform
+
+
 
 def download_xgb_model():
     # TODO: Add this to environment variables

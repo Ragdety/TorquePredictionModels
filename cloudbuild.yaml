@@ -14,7 +14,6 @@ steps:
       - '-c'
       - |
         pip install --upgrade pip
-        pip install google-cloud-storage xgboost pytest 
         pip install -r requirements.txt
 
   # Step 2: Download model from Google Cloud Storage (Vertex AI Model Registry)
