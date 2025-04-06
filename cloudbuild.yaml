@@ -41,7 +41,7 @@ steps:
   # Step 4: Run Integration Tests
   - name: 'python:3.12'
     id: 'Run Integration Tests'
-    entrypoint: 'pytest'
+    entrypoint: python
     args: ['-m', 'pytest', 'src/tests/integration_tests.py', '-v', '--junitxml=integration_test_results.xml']
 
   # # Step 5: Run White-Box Tests
