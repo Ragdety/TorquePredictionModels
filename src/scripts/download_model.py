@@ -25,9 +25,6 @@ def download_xgb_model():
     # Download Model
     blob.download_to_filename(LOCAL_XGB_MODEL_PATH)
 
-    # Rename model from pkl to json
-    LOCAL_XGB_MODEL_PATH = LOCAL_XGB_MODEL_PATH.replace('.pkl', '.json')
-
     print(f"Model downloaded to '{LOCAL_XGB_MODEL_PATH}'")
 
     return LOCAL_XGB_MODEL_PATH
