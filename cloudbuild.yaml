@@ -52,6 +52,11 @@ steps:
 
   # Upload test results to Cloud Storage
   - name: 'gcr.io/cloud-builders/gsutil'
-    args: ['cp', 'test-results.xml', 'gs://csi5370_bucket/test-results/']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gsutil cp unit_test_results.xml gs://csi5370_bucket/test_results/unit_test_results.xml
+        gsutil cp integration_test_results.xml gs://csi5370_bucket/test_results/integration_test_results.xml
 
 timeout: '1200s'
