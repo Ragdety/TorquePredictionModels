@@ -45,10 +45,11 @@ steps:
     args: ['-m', 'pytest', 'src/tests/integration_tests.py', '-v', '--junitxml=integration_test_results.xml']
 
   # # Step 5: Run White-Box Tests
-  # - name: 'python:3.12'
-  #   id: 'Run White-Box Tests'
-  #   entrypoint: 'pytest'
-  #   args: ['src/tests/white_box_tests.py']
+  - name: 'python:3.12'
+    id: 'Run White-Box Tests'
+    entrypoint: 'pytest'
+    entrypoint: python
+    args: ['-m', 'pytest', 'src/tests/white_box_tests.py', '-v', '--junitxml=white_box_test_results.xml']
 
   # Upload test results to Cloud Storage
   - name: 'gcr.io/cloud-builders/gsutil'
@@ -58,5 +59,6 @@ steps:
       - |
         gsutil cp unit_test_results.xml gs://csi5370_bucket/test_results/unit_test_results.xml
         gsutil cp integration_test_results.xml gs://csi5370_bucket/test_results/integration_test_results.xml
+        gsutil cp white_box_test_results.xml gs://csi5370_bucket/test_results/white_box_test_results.xml
 
 timeout: '1200s'
