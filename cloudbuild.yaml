@@ -36,25 +36,19 @@ steps:
   - name: 'python:3.12'
     id: 'Run Unit Tests'
     entrypoint: python
-    args: ['-m', 'pytest', 'src/tests/unit_tests.py', '-v', '--junitxml=test-results.xml']
+    args: ['-m', 'pytest', 'src/tests/unit_tests.py', '-v', '--junitxml=unit_test_results.xml']
 
   # Step 4: Run Integration Tests
-  # - name: 'python:3.12'
-  #   id: 'Run Integration Tests'
-  #   entrypoint: 'pytest'
-  #   args: ['src/tests/integration_tests.py']
+  - name: 'python:3.12'
+    id: 'Run Integration Tests'
+    entrypoint: 'pytest'
+    args: ['-m', 'pytest', 'src/tests/integration_tests.py', '-v', '--junitxml=integration_test_results.xml']
 
   # # Step 5: Run White-Box Tests
   # - name: 'python:3.12'
   #   id: 'Run White-Box Tests'
   #   entrypoint: 'pytest'
   #   args: ['src/tests/white_box_tests.py']
-
-  # # Step 6: Run Regression Tests
-  # - name: 'python:3.12'
-  #   id: 'Run Regression Tests'
-  #   entrypoint: 'pytest'
-  #   args: ['tests/regression_tests.py']
 
   # Upload test results to Cloud Storage
   - name: 'gcr.io/cloud-builders/gsutil'

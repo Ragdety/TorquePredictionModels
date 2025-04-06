@@ -13,9 +13,6 @@ import shutil
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from google.cloud import aiplatform
-
-
 
 def download_xgb_model():
     # TODO: Add this to environment variables
@@ -27,6 +24,10 @@ def download_xgb_model():
 
     # Download Model
     blob.download_to_filename(LOCAL_XGB_MODEL_PATH)
+
+    # Rename model from pkl to json
+    LOCAL_XGB_MODEL_PATH = LOCAL_XGB_MODEL_PATH.replace('.pkl', '.json')
+
     print(f"Model downloaded to '{LOCAL_XGB_MODEL_PATH}'")
 
     return LOCAL_XGB_MODEL_PATH

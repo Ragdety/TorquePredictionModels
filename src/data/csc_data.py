@@ -18,17 +18,18 @@ from data.df_preprocessing import SaveableDP, FeatureAdderDP
 # features (vehicle dynamics) and label (torque)
 class CSCDataset(Dataset):
     base_url = "https://huggingface.co/datasets/commaai/commaSteeringControl/resolve/main/data/"
-    storage_dir = os.path.join(os.getcwd(), 'storage')
+    storage = os.path.join(os.getcwd(), 'storage')
     
     def __init__(self, 
                  dataset: str, 
                  features: List, 
                  label: str = 'steerFiltered',
                  download: bool = False,
+                 storage_dir: str = None,
                  train_preprocessor: Optional[Callable] = None,
                  label_preprocessor: Optional[Callable] = None,
                  is_prediction: bool = False,
-                 logging_level: int = logging.INFO,) -> None:
+                 logging_level: int = logging.INFO) -> None:
         """
         Defines a Comma Steering Control (CSC) dataset for a specific car model
         <https://huggingface.co/datasets/commaai/commaSteeringControl/tree/main/data>
@@ -42,6 +43,11 @@ class CSCDataset(Dataset):
 
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging_level)
+
+        self.storage_dir = storage_dir
+        
+        if not storage_dir:
+            self.storage_dir = self.storage
 
         dataset_zip = self._preproc_dataset_name(dataset)
 
