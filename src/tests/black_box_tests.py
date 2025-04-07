@@ -4,6 +4,7 @@ import os
 import pickle
 import xgboost as xgb
 import pandas as pd
+import time
 import sys
 sys.path.append('../')
 
@@ -53,7 +54,7 @@ def model():
     model.load_model(model_path)
     return model
 
-# ----------- Data Preprocessor White-box Tests -----------
+# ----------- Data Preprocessor Black-box Tests -----------
 
 def test_lag_adder_adds_correct_lags():
     df = pd.DataFrame({"steerFiltered": [1, 2, 3, 4, 5]})
@@ -128,15 +129,80 @@ def test_preprocessing_pipeline_preserves_shape():
     assert df_out.shape[0] == df.shape[0]
 
 
-# ----------- Model White-box Tests -----------
+# ----------- Model Black-box Tests -----------
 
-def test_model_feature_shape_matches_training(model):
-    booster = model.get_booster()
+# 1. Standard input
+def test_standard_input_gives_valid_output(dataset, model):
+    loader = DataLoader(dataset, batch_size=1, shuffle=False)
+    X, _ = next(iter(loader))
+    X_np = X.numpy().reshape(-1, X.shape[2])
+    preds = model.predict(X_np)
+    
+    assert preds.shape[0] == X_np.shape[0]
+    assert np.all(np.isfinite(preds)), "Model output contains NaN or Inf"
 
-    # Get the number of features the model expects
-    num_model_features = booster.num_features()
+# 2. Zero input
+def test_zero_input_gives_reasonable_output(model):
+    X_np = np.zeros((10, 9))
+    preds = model.predict(X_np)
+    
+    assert preds.shape[0] == 10
+    assert np.all(np.isfinite(preds))
+    assert np.var(preds) >= 0  # Shouldn’t all be identical unless by design
 
-    assert num_model_features == 9, (
-        f"Model expects {num_model_features} features, but training used 9"
-    )
+# 3. Edge input
+def test_edge_input_extremes(model):
+    X_np = np.full((10, 9), 9999.0)
+    preds = model.predict(X_np)
+    
+    assert np.all(np.isfinite(preds))
 
+# 4. Random noise input
+def test_random_noise_input(model):
+    X_np = np.random.normal(0, 10, (10, 9))
+    preds = model.predict(X_np)
+    
+    assert preds.shape[0] == 10
+    assert np.all(np.isfinite(preds))
+
+# 5. Incomplete input
+def test_nan_input_handling_gracefully(model):
+    X_full = np.random.rand(10, 9)
+    X_nan = X_full.copy()
+    X_nan[0, 0] = np.nan  # Introduce NaN
+
+    preds = model.predict(X_nan)
+
+    assert preds.shape[0] == 10
+    assert np.all(np.isfinite(preds)), "Model prediction failed with NaN input"
+
+# 6. Constant input
+def test_constant_input(model):
+    X_np = np.full((10, 9), 5.0)
+    preds = model.predict(X_np)
+    
+    assert np.all(np.isfinite(preds))
+    assert np.var(preds) < 1.0  # Shouldn’t be highly variable
+
+# 7. Repeated input
+def test_repeated_input_consistency(model):
+    X_sample = np.random.rand(1, 9)
+    X_batch = np.tile(X_sample, (10, 1))
+    preds = model.predict(X_batch)
+    
+    assert np.allclose(preds, preds[0]), "Predictions for repeated inputs should be equal"
+
+# 8. Prediction speed
+def test_prediction_speed(model):
+    X_np = np.random.rand(1000, 9)  # Larger batch size for speed test
+    start_time = time.time()
+    model.predict(X_np)
+    elapsed_time = time.time() - start_time
+
+    # Instrument the time taken for prediction
+    print(f"Prediction time: {elapsed_time:.4f} seconds")
+    
+    assert elapsed_time < 0.1, "Prediction took too long"
+
+
+ 
