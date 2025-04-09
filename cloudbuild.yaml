@@ -46,7 +46,7 @@ steps:
 
   # # Step 5: Run White-Box Tests
   - name: 'python:3.12'
-    id: 'Run White-Box Tests'
+    id: 'Run Black-Box Tests'
     entrypoint: 'pytest'
     entrypoint: python
     args: ['-m', 'pytest', 'src/tests/black_box_tests.py', '-v', '--junitxml=black_box_test_results.xml']
